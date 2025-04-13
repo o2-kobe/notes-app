@@ -1,5 +1,11 @@
+import Navbar from "../../components/Navbar";
+
 function Home() {
-  return <div className="text-red-500 text-center bg-yellow-300">Home</div>;
+  return (
+    <>
+      <Navbar />
+    </>
+  );
 }
 
 export default Home;
