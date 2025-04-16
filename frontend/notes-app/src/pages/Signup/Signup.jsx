@@ -45,7 +45,7 @@ function Signup() {
             <input
               type="text"
               placeholder="Name"
-              className="input-box"
+              className="input-box outer"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -53,7 +53,7 @@ function Signup() {
             <input
               type="text"
               placeholder="Email"
-              className="input-box"
+              className="input-box outer"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
