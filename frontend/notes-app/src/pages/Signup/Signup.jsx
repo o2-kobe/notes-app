@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Navbar from "../../components/Navbar";
 import PasswordInput from "../../components/Input/PasswordInput";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { validateEmail } from "../../utils/helper";
+import axiosInstance from "../../utils/axiosInstance";
 
 function Signup() {
   const [name, setName] = useState("");
@@ -10,7 +10,9 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
-  function handleSignup(e) {
+  const navigate = useNavigate();
+
+  async function handleSignup(e) {
     e.preventDefault();
 
     if (!name) {
@@ -31,12 +33,34 @@ function Signup() {
     setError("");
 
     //SignUp Api call
+    try {
+      const response = await axiosInstance.post("/signup", {
+        email,
+        password,
+        fullName: name,
+      });
+
+      // Handle successful login response
+      if (response.data && response.data.accessToken) {
+        localStorage.setItem("token", response.data.accessToken);
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      // Handle Login error
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+      } else {
+        setError("An unexpected error occured. Please try again!");
+      }
+    }
   }
 
   return (
     <>
-      <Navbar />
-
       <div className="flex items-center justify-center mt-28 ">
         <div className="w-96 border border-[#c5c5c3]  rounded bg-white px-7 py-10">
           <form onSubmit={handleSignup}>

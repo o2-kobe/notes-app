@@ -2,15 +2,39 @@ import { MdAdd } from "react-icons/md";
 import NextCard from "../../components/Cards/NextCard";
 import Navbar from "../../components/Navbar";
 import AddEditNote from "./AddEditNote";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Modal from "react-modal";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../utils/axiosInstance";
 
 function Home() {
   const [openAddEditModal, setOpenAddEditModal] = useState({
-    isShown: true,
+    isShown: false,
     type: "add",
     data: null,
   });
+
+  const [userInfo, setUserInfo] = useState(null);
+
+  const navigate = useNavigate();
+
+  const getUserInfo = useCallback(async () => {
+    try {
+      const response = await axiosInstance("/user");
+      if (response.data && response.data.user) {
+        setUserInfo(response.data.user);
+      }
+    } catch (error) {
+      if (error.response?.status === 401) {
+        localStorage.clear();
+        navigate("/login");
+      }
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    getUserInfo();
+  }, [getUserInfo]);
 
   return (
     <>
