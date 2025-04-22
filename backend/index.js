@@ -173,7 +173,7 @@ app.get("/note", authenticateToken, async (req, res) => {
     res.status(200).json({
       error: false,
       results: notes.length,
-      data: notes,
+      notes,
     });
   } catch (err) {
     return res.status(500).json({
@@ -198,7 +198,7 @@ app.get("/note/:id", authenticateToken, async (req, res) => {
 
   res.status(200).json({
     error: false,
-    data: note,
+    note,
   });
 });
 

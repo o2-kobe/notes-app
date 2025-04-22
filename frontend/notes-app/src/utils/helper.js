@@ -14,3 +14,12 @@ export const getInitials = (name) => {
     .toUpperCase();
   return initials;
 };
+
+export const initialsToUpper = (name) => {
+  if (!name) return "";
+
+  return name
+    .split(" ")
+    .map((name) => name.replace(name[0], name[0].toUpperCase()))
+    .join(" ");
+};

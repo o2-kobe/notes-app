@@ -1,6 +1,6 @@
 import { MdAdd } from "react-icons/md";
 import NextCard from "../../components/Cards/NextCard";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import AddEditNote from "./AddEditNote";
 import { useCallback, useEffect, useState } from "react";
 import Modal from "react-modal";
@@ -14,6 +14,7 @@ function Home() {
     data: null,
   });
 
+  const [allNotes, setAllNotes] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
 
   const navigate = useNavigate();
@@ -32,28 +33,48 @@ function Home() {
     }
   }, [navigate]);
 
+  // Get all Notes
+  const getAllNotes = async () => {
+    try {
+      const response = await axiosInstance.get("/note");
+
+      if (response.data && response.data.notes) {
+        setAllNotes(response.data.notes);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     getUserInfo();
+    getAllNotes();
+    return () => {};
   }, [getUserInfo]);
 
   return (
     <>
-      <Navbar />
+      <Navbar userInfo={userInfo} />
 
       <div className="w-[95%] mx-auto">
         {" "}
         {/*class has to be container*/}
         <div className="grid grid-cols-3 gap-4 mt-8">
-          <NextCard
-            title="Eat breakfast"
-            date={new Date().toDateString()}
-            content="I enjoy breakfast because it is filled with all the vitamins i need"
-            tags="#food"
-            isPinned={true}
-            onEdit={() => {}}
-            onDelete={() => {}}
-            onPinNote={() => {}}
-          />
+          {allNotes?.map((note) => (
+            <NextCard
+              key={note._id}
+              title={note.title}
+              date={note.createdAt}
+              content={note.content}
+              tags={note.tag?.map((tag, i) => (
+                <span key={i}>{tag}</span>
+              ))}
+              isPinned={true}
+              onEdit={() => {}}
+              onDelete={() => {}}
+              onPinNote={() => {}}
+            />
+          ))}
         </div>
       </div>
 
